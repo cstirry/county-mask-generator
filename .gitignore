@@ -6,3 +6,6 @@ venv/
 
 # Data
 data/
+
+# Ignore PyCharm/JetBrains IDE project settings
+.idea/
