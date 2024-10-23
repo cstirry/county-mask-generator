@@ -17,7 +17,7 @@ To use the CountyMaskGenerator, you will need a shapefile containing county boun
 CountyMaskGenerator allows you to generate an Xarray dataset that can then be applied to aggregate and regrid lat/lon data.
 
 ## Example
-```bash
+```python
 from county_mask_generator import CountyMaskGenerator
 
 SHAPEFILE_PATH = "data/c_05mr24.shp"
@@ -40,24 +40,16 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 from shapely.geometry import Point
 
-# Convert xarray dataset to a DataFrame
-df = county_mask.to_dataframe().reset_index()
-gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.lon, df.lat))
-
 # Load the county shapefile
 counties_shapefile = gpd.read_file(SHAPEFILE_PATH)
 filtered_counties = counties_shapefile.cx[lon_min:lon_max, lat_min:lat_max]
 
 # Convert xarray dataset to a DataFrame
 df = county_mask.to_dataframe().reset_index()
-gdf = gpd.GeoDataFrame(
-    df,  # Assuming 'df' was created from your xarray dataset
-    geometry=gpd.points_from_xy(df.lon, df.lat),
-    crs="EPSG:4326"
-)
+gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.lon, df.lat), crs="EPSG:4326")
 
 # Plot the filtered counties and overlay the filtered grid points
-fig, ax = plt.subplots(figsize=(10, 7))
+fig, ax = plt.subplots(figsize=(10, 8))
 filtered_counties.plot(ax=ax, edgecolor='black', facecolor='none')
 filtered_gdf.plot(ax=ax, column='weights', legend=True, cmap='OrRd')
 plt.show()
