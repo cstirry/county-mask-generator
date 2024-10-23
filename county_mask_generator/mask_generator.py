@@ -54,11 +54,12 @@ class CountyMaskGenerator:
             if lon_range is None:
                 lon_range = (min_lon, max_lon)
 
-        # Set default steps if not provided
+        # Default ~1 mile grid spacing (assuming ~69 miles per degree latitude)
         if lat_steps is None:
-            lat_steps = 100
+            lat_steps = int((lat_range[1] - lat_range[0]) * 69)  # Rough estimate for 1 mile grid spacing
         if lon_steps is None:
-            lon_steps = 100
+            lon_steps = int((lon_range[1] - lon_range[0]) * 69 * np.cos(
+                np.radians(np.mean(lat_range))))  # Adjust for longitude spacing at different latitudes
 
         # Generate the latitude and longitude grid
         lat = np.linspace(lat_range[0], lat_range[1], lat_steps)
@@ -115,7 +116,7 @@ class CountyMaskGenerator:
 
             # Handle NaN FIPS
             if pd.isna(fips):
-                print(f"Skipping grid point at lat: {row['lat']}, lon: {row['lon']} due to NaN FIPS")
+                #print(f"Skipping grid point at lat: {row['lat']}, lon: {row['lon']} due to NaN FIPS")
                 continue
 
             # Get latitude and longitude indices
